@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Brand OS - Your Brand, Elevated",
-  description: "The next-generation platform for building, managing, and scaling your brand identity. Powered by AI. Designed for creators.",
+  title: "브랜드OS - 브랜드를 더 쉽게, 더 강력하게",
+  description: "AI 기반의 브랜드 관리 플랫폼으로 누구나 쉽게 브랜드 아이덴티티를 만들고 관리하세요.",
 };
 
 export default function RootLayout({
