@@ -1,10 +1,14 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
+  --background: #f9fafb;
   --foreground: #191f28;
   --toss-blue: #0064FF;
   --toss-blue-light: #e8f3ff;
+  --success: #10b981;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+  --emergency: #1f2937;
   --gray-50: #f9fafb;
   --gray-100: #f2f4f6;
   --gray-200: #e5e8eb;
@@ -36,68 +40,230 @@ html {
   scroll-behavior: smooth;
 }
 
-/* Toss Style Card */
-.toss-card {
+/* Card Styles */
+.card {
   background: #ffffff;
-  border-radius: 20px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04), 0 8px 20px rgba(0, 0, 0, 0.06);
+  border-radius: 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 12px rgba(0, 0, 0, 0.04);
   transition: all 0.2s ease;
 }
 
-.toss-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06), 0 12px 28px rgba(0, 0, 0, 0.1);
+.card:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06), 0 8px 24px rgba(0, 0, 0, 0.08);
 }
 
-/* Toss Button */
-.toss-button {
+/* Alert badges */
+.badge-normal { background: #d1fae5; color: #065f46; }
+.badge-warning { background: #fef3c7; color: #92400e; }
+.badge-danger { background: #fee2e2; color: #991b1b; }
+.badge-emergency { background: #1f2937; color: #ffffff; }
+
+/* Status indicators */
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.status-normal { background: #10b981; }
+.status-warning { background: #f59e0b; }
+.status-danger { background: #ef4444; }
+.status-emergency { background: #1f2937; }
+
+/* Progress bar */
+.progress-bar {
+  height: 8px;
+  background: #e5e8eb;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
   background: var(--toss-blue);
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 260px;
+  background: #ffffff;
+  border-right: 1px solid #e5e8eb;
+  height: 100vh;
+  position: fixed;
+  left: 0;
+  top: 0;
+}
+
+.sidebar-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  margin: 4px 12px;
+  border-radius: 12px;
+  color: #6b7684;
+  transition: all 0.15s ease;
+  cursor: pointer;
+}
+
+.sidebar-item:hover {
+  background: #f2f4f6;
+  color: #191f28;
+}
+
+.sidebar-item.active {
+  background: #e8f3ff;
+  color: #0064FF;
+}
+
+/* Main content */
+.main-content {
+  margin-left: 260px;
+  padding: 24px 32px;
+  min-height: 100vh;
+}
+
+/* Table styles */
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.data-table th,
+.data-table td {
+  padding: 14px 16px;
+  text-align: left;
+  border-bottom: 1px solid #e5e8eb;
+}
+
+.data-table th {
+  font-weight: 600;
+  color: #6b7684;
+  font-size: 13px;
+}
+
+.data-table tbody tr:hover {
+  background: #f9fafb;
+}
+
+/* Phase progress */
+.phase-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+}
+
+.phase-circle {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.phase-circle.completed {
+  background: #0064FF;
   color: white;
-  border-radius: 16px;
-  font-weight: 600;
-  transition: all 0.2s ease;
 }
 
-.toss-button:hover {
-  background: #0055d4;
-  transform: scale(1.02);
+.phase-circle.current {
+  background: #e8f3ff;
+  color: #0064FF;
+  border: 2px solid #0064FF;
 }
 
-.toss-button-secondary {
-  background: var(--gray-100);
-  color: var(--gray-800);
-  border-radius: 16px;
-  font-weight: 600;
-  transition: all 0.2s ease;
+.phase-circle.pending {
+  background: #f2f4f6;
+  color: #b0b8c1;
 }
 
-.toss-button-secondary:hover {
-  background: var(--gray-200);
+.phase-line {
+  flex: 1;
+  height: 3px;
+  background: #e5e8eb;
+  margin: 0 -8px;
+  margin-top: 22px;
 }
 
-/* Smooth fade in animation */
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+.phase-line.completed {
+  background: #0064FF;
 }
 
-.animate-fade-in-up {
-  animation: fadeInUp 0.6s ease-out forwards;
+/* Checkbox */
+.checkbox-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid #f2f4f6;
 }
 
-/* Section spacing */
-.section-padding {
-  padding: 80px 24px;
+.checkbox-item:last-child {
+  border-bottom: none;
 }
 
-@media (min-width: 768px) {
-  .section-padding {
-    padding: 120px 40px;
-  }
+.custom-checkbox {
+  width: 22px;
+  height: 22px;
+  border: 2px solid #d1d6db;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+}
+
+.custom-checkbox.checked {
+  background: #0064FF;
+  border-color: #0064FF;
+}
+
+.custom-checkbox.checked svg {
+  color: white;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #d1d6db;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #b0b8c1;
 }

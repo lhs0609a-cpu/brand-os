@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "브랜드OS - 브랜드를 더 쉽게, 더 강력하게",
-  description: "AI 기반의 브랜드 관리 플랫폼으로 누구나 쉽게 브랜드 아이덴티티를 만들고 관리하세요.",
+  title: "Brand OS - 브랜드 운영 시스템",
+  description: "체크만 하면 브랜드가 자동으로 굴러가는 완전 자동화 시스템",
 };
 
 export default function RootLayout({
@@ -23,7 +23,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="ko">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >

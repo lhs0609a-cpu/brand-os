@@ -1,335 +1,452 @@
-export default function Home() {
+"use client";
+
+import { useState } from "react";
+
+// Icons
+const DashboardIcon = () => (
+  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+  </svg>
+);
+
+const PhaseIcon = () => (
+  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+  </svg>
+);
+
+const InventoryIcon = () => (
+  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+  </svg>
+);
+
+const FinanceIcon = () => (
+  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+  </svg>
+);
+
+const MarketingIcon = () => (
+  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z" />
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z" />
+  </svg>
+);
+
+const SettingsIcon = () => (
+  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+  </svg>
+);
+
+const CheckIcon = () => (
+  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+  </svg>
+);
+
+// Sample Data
+const alerts = [
+  { id: 1, level: "emergency", message: "유산균 프로바이오틱스 - 3일 후 품절 예상", action: "조치하기" },
+  { id: 2, level: "danger", message: "월 현금 잔액이 1개월 운영비 이하입니다", action: "상세보기" },
+  { id: 3, level: "warning", message: "경쟁사 A가 15% 가격 인하를 단행했습니다", action: "분석하기" },
+];
+
+const inventory = [
+  { id: 1, name: "유산균 프로바이오틱스", stock: 85, status: "emergency", daysLeft: 3 },
+  { id: 2, name: "비타민C 1000mg", stock: 420, status: "normal", daysLeft: 45 },
+  { id: 3, name: "오메가3 피쉬오일", stock: 180, status: "warning", daysLeft: 12 },
+  { id: 4, name: "콜라겐 펩타이드", stock: 350, status: "normal", daysLeft: 35 },
+];
+
+const todos = [
+  { id: 1, text: "유산균 긴급 발주 검토 및 승인", priority: "danger", done: false },
+  { id: 2, text: "인플루언서 @beauty_anna 콘텐츠 업로드 확인", priority: "warning", done: false },
+  { id: 3, text: "경쟁사 A 가격 인하 대응 전략 회의", priority: "warning", done: false },
+  { id: 4, text: "스마트스토어 신상품 상세페이지 최종 검수", priority: "normal", done: true },
+  { id: 5, text: "이번 주 리뷰 이벤트 당첨자 선정", priority: "normal", done: false },
+];
+
+const schedule = [
+  { date: "01/02 (목)", event: "OEM 샘플 입고 예정" },
+  { date: "01/05 (일)", event: "인플루언서 협업 콘텐츠 업로드 (3건)" },
+  { date: "01/10 (금)", event: "GMP 인증 갱신 마감 D-90" },
+  { date: "01/15 (수)", event: "월간 정산 완료 예정" },
+];
+
+const phases = [
+  { id: 1, name: "사업 준비", status: "completed", progress: 100 },
+  { id: 2, name: "제품 개발", status: "completed", progress: 100 },
+  { id: 3, name: "생산 체계", status: "current", progress: 50 },
+  { id: 4, name: "런칭 준비", status: "pending", progress: 0 },
+  { id: 5, name: "운영", status: "pending", progress: 0 },
+];
+
+export default function Dashboard() {
+  const [activeMenu, setActiveMenu] = useState("dashboard");
+  const [todoList, setTodoList] = useState(todos);
+
+  const toggleTodo = (id: number) => {
+    setTodoList(todoList.map(todo =>
+      todo.id === id ? { ...todo, done: !todo.done } : todo
+    ));
+  };
+
+  const getAlertStyle = (level: string) => {
+    switch (level) {
+      case "emergency": return "bg-gray-900 text-white";
+      case "danger": return "bg-red-50 text-red-700 border-l-4 border-red-500";
+      case "warning": return "bg-amber-50 text-amber-700 border-l-4 border-amber-500";
+      default: return "bg-green-50 text-green-700";
+    }
+  };
+
+  const getAlertIcon = (level: string) => {
+    switch (level) {
+      case "emergency": return "⚫";
+      case "danger": return "🔴";
+      case "warning": return "🟡";
+      default: return "🟢";
+    }
+  };
+
+  const getStatusStyle = (status: string) => {
+    switch (status) {
+      case "emergency": return "status-emergency";
+      case "danger": return "status-danger";
+      case "warning": return "status-warning";
+      default: return "status-normal";
+    }
+  };
+
+  const getStatusText = (status: string) => {
+    switch (status) {
+      case "emergency": return "품절임박";
+      case "danger": return "위험";
+      case "warning": return "주의";
+      default: return "정상";
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-white text-[#191f28]">
-      {/* Navigation */}
-      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-gray-100">
-        <div className="max-w-6xl mx-auto flex items-center justify-between px-6 py-4">
-          <div className="flex items-center gap-2">
-            <div className="w-9 h-9 rounded-xl bg-[#0064FF] flex items-center justify-center font-bold text-white text-sm">
-              B
-            </div>
-            <span className="font-bold text-xl">브랜드OS</span>
-          </div>
-
-          <div className="hidden md:flex items-center gap-10 text-[15px] text-[#6b7684]">
-            <a href="#features" className="hover:text-[#191f28] transition-colors">기능</a>
-            <a href="#pricing" className="hover:text-[#191f28] transition-colors">요금제</a>
-            <a href="#about" className="hover:text-[#191f28] transition-colors">소개</a>
-          </div>
-
+    <div className="min-h-screen bg-[#f9fafb]">
+      {/* Sidebar */}
+      <aside className="sidebar">
+        <div className="p-5 border-b border-gray-100">
           <div className="flex items-center gap-3">
-            <button className="hidden sm:block px-4 py-2 text-[15px] text-[#6b7684] hover:text-[#191f28] transition-colors">
-              로그인
-            </button>
-            <button className="px-5 py-2.5 text-[15px] font-semibold rounded-xl bg-[#0064FF] text-white hover:bg-[#0055d4] transition-colors">
-              시작하기
-            </button>
-          </div>
-        </div>
-      </nav>
-
-      {/* Hero Section */}
-      <section className="section-padding">
-        <div className="max-w-6xl mx-auto text-center">
-          <div className="inline-flex items-center gap-2 px-4 py-2 mb-6 text-sm font-medium rounded-full bg-[#e8f3ff] text-[#0064FF]">
-            <span className="w-1.5 h-1.5 bg-[#0064FF] rounded-full" />
-            새로운 브랜드 경험
-          </div>
-
-          <h1 className="text-[40px] md:text-[56px] lg:text-[64px] font-bold leading-[1.2] tracking-tight mb-6">
-            브랜드를 더 쉽게,
-            <br />
-            <span className="text-[#0064FF]">더 강력하게</span>
-          </h1>
-
-          <p className="text-lg md:text-xl text-[#6b7684] leading-relaxed max-w-2xl mx-auto mb-10">
-            AI 기반의 브랜드 관리 플랫폼으로
-            <br className="hidden sm:block" />
-            누구나 쉽게 브랜드 아이덴티티를 만들고 관리하세요
-          </p>
-
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <button className="w-full sm:w-auto px-8 py-4 text-[17px] font-semibold rounded-2xl bg-[#0064FF] text-white hover:bg-[#0055d4] transition-all hover:scale-[1.02]">
-              무료로 시작하기
-            </button>
-            <button className="w-full sm:w-auto px-8 py-4 text-[17px] font-semibold rounded-2xl bg-[#f2f4f6] text-[#333d4b] hover:bg-[#e5e8eb] transition-colors">
-              데모 보기
-            </button>
-          </div>
-
-          {/* Stats */}
-          <div className="flex flex-wrap justify-center gap-8 md:gap-16 mt-16 pt-16 border-t border-gray-100">
-            <div className="text-center">
-              <div className="text-[32px] md:text-[40px] font-bold text-[#0064FF]">10,000+</div>
-              <div className="text-[15px] text-[#8b95a1] mt-1">활성 사용자</div>
+            <div className="w-10 h-10 rounded-xl bg-[#0064FF] flex items-center justify-center">
+              <span className="text-white font-bold">B</span>
             </div>
-            <div className="text-center">
-              <div className="text-[32px] md:text-[40px] font-bold text-[#0064FF]">5,000만+</div>
-              <div className="text-[15px] text-[#8b95a1] mt-1">생성된 에셋</div>
-            </div>
-            <div className="text-center">
-              <div className="text-[32px] md:text-[40px] font-bold text-[#0064FF]">99.9%</div>
-              <div className="text-[15px] text-[#8b95a1] mt-1">가동률</div>
+            <div>
+              <div className="font-bold text-[15px]">Brand OS</div>
+              <div className="text-[12px] text-[#8b95a1]">v2.0</div>
             </div>
           </div>
         </div>
-      </section>
 
-      {/* Features Section */}
-      <section id="features" className="section-padding bg-[#f9fafb]">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-[32px] md:text-[44px] font-bold mb-4">
-              브랜드 관리의 모든 것
-            </h2>
-            <p className="text-lg text-[#6b7684] max-w-xl mx-auto">
-              복잡한 브랜드 작업을 간단하게 해결하세요
-            </p>
+        <nav className="py-4">
+          <div className="px-4 mb-2">
+            <span className="text-[11px] font-semibold text-[#8b95a1] uppercase tracking-wider">메인</span>
+          </div>
+          <div
+            className={`sidebar-item ${activeMenu === "dashboard" ? "active" : ""}`}
+            onClick={() => setActiveMenu("dashboard")}
+          >
+            <DashboardIcon />
+            <span className="text-[14px]">대시보드</span>
+          </div>
+          <div
+            className={`sidebar-item ${activeMenu === "phases" ? "active" : ""}`}
+            onClick={() => setActiveMenu("phases")}
+          >
+            <PhaseIcon />
+            <span className="text-[14px]">Phase 관리</span>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {/* Feature Card 1 */}
-            <div className="toss-card p-8">
-              <div className="w-14 h-14 rounded-2xl bg-[#e8f3ff] flex items-center justify-center mb-6">
-                <svg className="w-7 h-7 text-[#0064FF]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                </svg>
-              </div>
-              <h3 className="text-[20px] font-bold mb-3">AI 에셋 생성</h3>
-              <p className="text-[#6b7684] leading-relaxed">
-                로고, 배너, 소셜 미디어 이미지까지 AI가 자동으로 생성해드려요
-              </p>
-            </div>
+          <div className="px-4 mb-2 mt-6">
+            <span className="text-[11px] font-semibold text-[#8b95a1] uppercase tracking-wider">운영</span>
+          </div>
+          <div
+            className={`sidebar-item ${activeMenu === "inventory" ? "active" : ""}`}
+            onClick={() => setActiveMenu("inventory")}
+          >
+            <InventoryIcon />
+            <span className="text-[14px]">재고 관리</span>
+          </div>
+          <div
+            className={`sidebar-item ${activeMenu === "finance" ? "active" : ""}`}
+            onClick={() => setActiveMenu("finance")}
+          >
+            <FinanceIcon />
+            <span className="text-[14px]">재무 관리</span>
+          </div>
+          <div
+            className={`sidebar-item ${activeMenu === "marketing" ? "active" : ""}`}
+            onClick={() => setActiveMenu("marketing")}
+          >
+            <MarketingIcon />
+            <span className="text-[14px]">마케팅</span>
+          </div>
 
-            {/* Feature Card 2 */}
-            <div className="toss-card p-8">
-              <div className="w-14 h-14 rounded-2xl bg-[#fff0e8] flex items-center justify-center mb-6">
-                <svg className="w-7 h-7 text-[#ff6b35]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
-                </svg>
-              </div>
-              <h3 className="text-[20px] font-bold mb-3">스마트 컬러 시스템</h3>
-              <p className="text-[#6b7684] leading-relaxed">
-                브랜드 성격에 맞는 조화로운 컬러 팔레트를 자동으로 추천해요
-              </p>
-            </div>
+          <div className="px-4 mb-2 mt-6">
+            <span className="text-[11px] font-semibold text-[#8b95a1] uppercase tracking-wider">설정</span>
+          </div>
+          <div
+            className={`sidebar-item ${activeMenu === "settings" ? "active" : ""}`}
+            onClick={() => setActiveMenu("settings")}
+          >
+            <SettingsIcon />
+            <span className="text-[14px]">설정</span>
+          </div>
+        </nav>
 
-            {/* Feature Card 3 */}
-            <div className="toss-card p-8">
-              <div className="w-14 h-14 rounded-2xl bg-[#f0e8ff] flex items-center justify-center mb-6">
-                <svg className="w-7 h-7 text-[#8b5cf6]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z" />
-                </svg>
-              </div>
-              <h3 className="text-[20px] font-bold mb-3">템플릿 라이브러리</h3>
-              <p className="text-[#6b7684] leading-relaxed">
-                수천 개의 전문 디자인 템플릿을 바로 사용할 수 있어요
-              </p>
+        {/* Current Phase */}
+        <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-100">
+          <div className="text-[12px] text-[#8b95a1] mb-2">현재 Phase</div>
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-lg bg-[#e8f3ff] flex items-center justify-center">
+              <span className="text-[#0064FF] font-bold text-sm">3</span>
             </div>
-
-            {/* Feature Card 4 */}
-            <div className="toss-card p-8">
-              <div className="w-14 h-14 rounded-2xl bg-[#e8fff0] flex items-center justify-center mb-6">
-                <svg className="w-7 h-7 text-[#10b981]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                </svg>
-              </div>
-              <h3 className="text-[20px] font-bold mb-3">팀 협업</h3>
-              <p className="text-[#6b7684] leading-relaxed">
-                실시간 편집과 댓글로 팀원들과 함께 작업하세요
-              </p>
-            </div>
-
-            {/* Feature Card 5 */}
-            <div className="toss-card p-8">
-              <div className="w-14 h-14 rounded-2xl bg-[#fff8e8] flex items-center justify-center mb-6">
-                <svg className="w-7 h-7 text-[#f59e0b]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                </svg>
-              </div>
-              <h3 className="text-[20px] font-bold mb-3">분석 대시보드</h3>
-              <p className="text-[#6b7684] leading-relaxed">
-                브랜드 성과와 인사이트를 한눈에 확인하세요
-              </p>
-            </div>
-
-            {/* Feature Card 6 */}
-            <div className="toss-card p-8">
-              <div className="w-14 h-14 rounded-2xl bg-[#ffe8f0] flex items-center justify-center mb-6">
-                <svg className="w-7 h-7 text-[#ec4899]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                </svg>
-              </div>
-              <h3 className="text-[20px] font-bold mb-3">API 연동</h3>
-              <p className="text-[#6b7684] leading-relaxed">
-                다양한 툴과 연동하여 워크플로우를 자동화하세요
-              </p>
+            <div>
+              <div className="text-[13px] font-semibold">생산 체계 구축</div>
+              <div className="text-[11px] text-[#8b95a1]">50% 완료</div>
             </div>
           </div>
         </div>
-      </section>
+      </aside>
 
-      {/* Pricing Section */}
-      <section id="pricing" className="section-padding">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-[32px] md:text-[44px] font-bold mb-4">
-              심플한 요금제
-            </h2>
-            <p className="text-lg text-[#6b7684]">
-              필요한 만큼만 사용하세요
-            </p>
+      {/* Main Content */}
+      <main className="main-content">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <h1 className="text-[24px] font-bold">대시보드</h1>
+            <p className="text-[14px] text-[#6b7684]">브랜드 운영 현황을 한눈에 확인하세요</p>
           </div>
-
-          <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
-            {/* Free Plan */}
-            <div className="toss-card p-8">
-              <div className="text-[15px] font-medium text-[#8b95a1] mb-2">무료</div>
-              <div className="text-[36px] font-bold mb-1">₩0</div>
-              <div className="text-[15px] text-[#8b95a1] mb-8">영원히 무료</div>
-              <ul className="space-y-4 mb-8">
-                <li className="flex items-center gap-3 text-[15px]">
-                  <svg className="w-5 h-5 text-[#0064FF]" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                  </svg>
-                  월 100개 에셋 생성
-                </li>
-                <li className="flex items-center gap-3 text-[15px]">
-                  <svg className="w-5 h-5 text-[#0064FF]" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                  </svg>
-                  기본 템플릿
-                </li>
-                <li className="flex items-center gap-3 text-[15px]">
-                  <svg className="w-5 h-5 text-[#0064FF]" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                  </svg>
-                  1명 사용자
-                </li>
-              </ul>
-              <button className="w-full py-4 text-[16px] font-semibold rounded-2xl bg-[#f2f4f6] text-[#333d4b] hover:bg-[#e5e8eb] transition-colors">
-                무료로 시작
-              </button>
+          <div className="flex items-center gap-3">
+            <div className="text-right">
+              <div className="text-[13px] text-[#6b7684]">오늘</div>
+              <div className="text-[15px] font-semibold">2025년 1월 1일</div>
             </div>
+          </div>
+        </div>
 
-            {/* Pro Plan */}
-            <div className="toss-card p-8 ring-2 ring-[#0064FF] relative">
-              <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 bg-[#0064FF] text-white text-[13px] font-semibold rounded-full">
-                인기
+        {/* Alert Center */}
+        <div className="card p-5 mb-6">
+          <div className="flex items-center gap-2 mb-4">
+            <span className="text-lg">🚨</span>
+            <h2 className="text-[16px] font-bold">알림 센터</h2>
+            <span className="ml-auto text-[13px] text-[#0064FF] cursor-pointer hover:underline">모두 보기</span>
+          </div>
+          <div className="space-y-3">
+            {alerts.map(alert => (
+              <div key={alert.id} className={`flex items-center justify-between p-4 rounded-xl ${getAlertStyle(alert.level)}`}>
+                <div className="flex items-center gap-3">
+                  <span>{getAlertIcon(alert.level)}</span>
+                  <span className="text-[14px]">{alert.level === "emergency" ? "[비상]" : alert.level === "danger" ? "[위험]" : "[주의]"} {alert.message}</span>
+                </div>
+                <button className={`text-[13px] font-medium px-3 py-1.5 rounded-lg ${alert.level === "emergency" ? "bg-white text-gray-900" : "bg-white/80"}`}>
+                  {alert.action}
+                </button>
               </div>
-              <div className="text-[15px] font-medium text-[#0064FF] mb-2">프로</div>
-              <div className="text-[36px] font-bold mb-1">₩29,000</div>
-              <div className="text-[15px] text-[#8b95a1] mb-8">월 / 사용자당</div>
-              <ul className="space-y-4 mb-8">
-                <li className="flex items-center gap-3 text-[15px]">
-                  <svg className="w-5 h-5 text-[#0064FF]" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                  </svg>
-                  무제한 에셋 생성
-                </li>
-                <li className="flex items-center gap-3 text-[15px]">
-                  <svg className="w-5 h-5 text-[#0064FF]" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                  </svg>
-                  모든 프리미엄 템플릿
-                </li>
-                <li className="flex items-center gap-3 text-[15px]">
-                  <svg className="w-5 h-5 text-[#0064FF]" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                  </svg>
-                  팀 협업 기능
-                </li>
-                <li className="flex items-center gap-3 text-[15px]">
-                  <svg className="w-5 h-5 text-[#0064FF]" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                  </svg>
-                  우선 지원
-                </li>
-              </ul>
-              <button className="w-full py-4 text-[16px] font-semibold rounded-2xl bg-[#0064FF] text-white hover:bg-[#0055d4] transition-colors">
-                프로 시작하기
-              </button>
-            </div>
-
-            {/* Enterprise Plan */}
-            <div className="toss-card p-8">
-              <div className="text-[15px] font-medium text-[#8b95a1] mb-2">엔터프라이즈</div>
-              <div className="text-[36px] font-bold mb-1">문의</div>
-              <div className="text-[15px] text-[#8b95a1] mb-8">맞춤 견적</div>
-              <ul className="space-y-4 mb-8">
-                <li className="flex items-center gap-3 text-[15px]">
-                  <svg className="w-5 h-5 text-[#0064FF]" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                  </svg>
-                  프로의 모든 기능
-                </li>
-                <li className="flex items-center gap-3 text-[15px]">
-                  <svg className="w-5 h-5 text-[#0064FF]" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                  </svg>
-                  전용 API
-                </li>
-                <li className="flex items-center gap-3 text-[15px]">
-                  <svg className="w-5 h-5 text-[#0064FF]" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                  </svg>
-                  SSO 연동
-                </li>
-                <li className="flex items-center gap-3 text-[15px]">
-                  <svg className="w-5 h-5 text-[#0064FF]" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                  </svg>
-                  전담 매니저
-                </li>
-              </ul>
-              <button className="w-full py-4 text-[16px] font-semibold rounded-2xl bg-[#f2f4f6] text-[#333d4b] hover:bg-[#e5e8eb] transition-colors">
-                영업팀 문의
-              </button>
-            </div>
+            ))}
           </div>
         </div>
-      </section>
 
-      {/* CTA Section */}
-      <section className="section-padding bg-[#f9fafb]">
-        <div className="max-w-3xl mx-auto text-center">
-          <h2 className="text-[32px] md:text-[44px] font-bold mb-4">
-            지금 바로 시작하세요
-          </h2>
-          <p className="text-lg text-[#6b7684] mb-10">
-            5분 만에 브랜드 아이덴티티를 만들 수 있어요
-          </p>
-          <button className="px-10 py-5 text-[18px] font-semibold rounded-2xl bg-[#0064FF] text-white hover:bg-[#0055d4] transition-all hover:scale-[1.02]">
-            무료로 시작하기
-          </button>
-        </div>
-      </section>
-
-      {/* Footer */}
-      <footer className="px-6 py-12 border-t border-gray-100">
-        <div className="max-w-6xl mx-auto">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-xl bg-[#0064FF] flex items-center justify-center font-bold text-white text-sm">
-                B
+        {/* Stats Row */}
+        <div className="grid grid-cols-4 gap-4 mb-6">
+          <div className="card p-5">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="w-10 h-10 rounded-xl bg-[#e8f3ff] flex items-center justify-center">
+                <span>💰</span>
               </div>
-              <span className="font-bold text-lg">브랜드OS</span>
+              <span className="text-[13px] text-[#6b7684]">오늘 매출</span>
             </div>
-
-            <div className="flex items-center gap-8 text-[14px] text-[#8b95a1]">
-              <a href="#" className="hover:text-[#191f28] transition-colors">이용약관</a>
-              <a href="#" className="hover:text-[#191f28] transition-colors">개인정보처리방침</a>
-              <a href="#" className="hover:text-[#191f28] transition-colors">고객센터</a>
-            </div>
+            <div className="text-[24px] font-bold">₩1,250,000</div>
+            <div className="text-[13px] text-green-600 mt-1">▲ 15% (전일대비)</div>
           </div>
-
-          <div className="mt-8 pt-8 border-t border-gray-100 text-center md:text-left">
-            <p className="text-[13px] text-[#b0b8c1]">
-              © 2025 브랜드OS. All rights reserved.
-            </p>
+          <div className="card p-5">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="w-10 h-10 rounded-xl bg-[#fff0e8] flex items-center justify-center">
+                <span>📦</span>
+              </div>
+              <span className="text-[13px] text-[#6b7684]">오늘 주문</span>
+            </div>
+            <div className="text-[24px] font-bold">42건</div>
+            <div className="text-[13px] text-green-600 mt-1">▲ 8% (전일대비)</div>
+          </div>
+          <div className="card p-5">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="w-10 h-10 rounded-xl bg-[#f0e8ff] flex items-center justify-center">
+                <span>🚚</span>
+              </div>
+              <span className="text-[13px] text-[#6b7684]">오늘 출고</span>
+            </div>
+            <div className="text-[24px] font-bold">38건</div>
+            <div className="text-[13px] text-green-600 mt-1">▲ 12% (전일대비)</div>
+          </div>
+          <div className="card p-5">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="w-10 h-10 rounded-xl bg-[#e8fff0] flex items-center justify-center">
+                <span>💬</span>
+              </div>
+              <span className="text-[13px] text-[#6b7684]">CS 문의</span>
+            </div>
+            <div className="text-[24px] font-bold">5건</div>
+            <div className="text-[13px] text-green-600 mt-1">▼ 20% (전일대비)</div>
           </div>
         </div>
-      </footer>
+
+        {/* Phase Progress */}
+        <div className="card p-5 mb-6">
+          <div className="flex items-center gap-2 mb-6">
+            <span className="text-lg">📍</span>
+            <h2 className="text-[16px] font-bold">브랜드 런칭 진행률</h2>
+            <span className="ml-2 text-[13px] text-[#0064FF] font-semibold">68%</span>
+          </div>
+          <div className="flex items-center">
+            {phases.map((phase, index) => (
+              <div key={phase.id} className="flex items-center flex-1">
+                <div className="phase-item">
+                  <div className={`phase-circle ${phase.status}`}>
+                    {phase.status === "completed" ? <CheckIcon /> : phase.id}
+                  </div>
+                  <div className="text-center mt-3">
+                    <div className={`text-[13px] font-medium ${phase.status === "current" ? "text-[#0064FF]" : phase.status === "completed" ? "text-[#191f28]" : "text-[#b0b8c1]"}`}>
+                      {phase.name}
+                    </div>
+                    <div className="text-[11px] text-[#8b95a1]">
+                      {phase.status === "completed" ? "완료" : phase.status === "current" ? "진행중" : "대기"}
+                    </div>
+                  </div>
+                </div>
+                {index < phases.length - 1 && (
+                  <div className={`phase-line ${phase.status === "completed" ? "completed" : ""}`} />
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 gap-6 mb-6">
+          {/* Inventory Status */}
+          <div className="card p-5">
+            <div className="flex items-center gap-2 mb-4">
+              <span className="text-lg">📦</span>
+              <h2 className="text-[16px] font-bold">재고 현황</h2>
+              <span className="ml-auto text-[13px] text-[#0064FF] cursor-pointer hover:underline">전체 보기</span>
+            </div>
+            <table className="data-table">
+              <thead>
+                <tr>
+                  <th>제품명</th>
+                  <th>현재고</th>
+                  <th>상태</th>
+                  <th>예상 소진</th>
+                </tr>
+              </thead>
+              <tbody>
+                {inventory.map(item => (
+                  <tr key={item.id}>
+                    <td className="text-[14px] font-medium">{item.name}</td>
+                    <td className="text-[14px]">{item.stock}개</td>
+                    <td>
+                      <div className="flex items-center gap-2">
+                        <span className={`status-dot ${getStatusStyle(item.status)}`} />
+                        <span className="text-[13px]">{getStatusText(item.status)}</span>
+                      </div>
+                    </td>
+                    <td className="text-[14px]">{item.daysLeft}일 후</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Cash Flow */}
+          <div className="card p-5">
+            <div className="flex items-center gap-2 mb-4">
+              <span className="text-lg">💰</span>
+              <h2 className="text-[16px] font-bold">현금 흐름</h2>
+            </div>
+            <div className="mb-6">
+              <div className="text-[13px] text-[#6b7684] mb-1">현재 잔액</div>
+              <div className="text-[28px] font-bold text-[#0064FF]">₩15,420,000</div>
+            </div>
+            <div className="space-y-4">
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-[13px] text-[#6b7684]">예상 입금 (7일)</span>
+                  <span className="text-[14px] font-semibold text-green-600">+₩6,000,000</span>
+                </div>
+                <div className="text-[12px] text-[#8b95a1]">
+                  스마트스토어 ₩3,200,000 / 쿠팡 ₩2,800,000
+                </div>
+              </div>
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-[13px] text-[#6b7684]">예상 지출 (7일)</span>
+                  <span className="text-[14px] font-semibold text-red-500">-₩6,500,000</span>
+                </div>
+                <div className="text-[12px] text-[#8b95a1]">
+                  OEM 잔금 ₩5,000,000 / 마케팅 ₩1,500,000
+                </div>
+              </div>
+              <div className="pt-4 border-t border-gray-100">
+                <div className="flex items-center justify-between">
+                  <span className="text-[13px] text-[#6b7684]">30일 후 예상 잔액</span>
+                  <span className="text-[16px] font-bold">₩14,920,000</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 gap-6">
+          {/* Today's Todo */}
+          <div className="card p-5">
+            <div className="flex items-center gap-2 mb-4">
+              <span className="text-lg">✅</span>
+              <h2 className="text-[16px] font-bold">오늘 할 일</h2>
+              <span className="ml-auto text-[13px] text-[#8b95a1]">{todoList.filter(t => t.done).length}/{todoList.length} 완료</span>
+            </div>
+            <div>
+              {todoList.map(todo => (
+                <div key={todo.id} className="checkbox-item" onClick={() => toggleTodo(todo.id)}>
+                  <div className={`custom-checkbox ${todo.done ? "checked" : ""}`}>
+                    {todo.done && <CheckIcon />}
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2">
+                      {todo.priority === "danger" && <span className="text-red-500 text-[12px]">🔴 [긴급]</span>}
+                      {todo.priority === "warning" && <span className="text-amber-500 text-[12px]">🟡</span>}
+                      <span className={`text-[14px] ${todo.done ? "text-[#b0b8c1] line-through" : ""}`}>{todo.text}</span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Upcoming Schedule */}
+          <div className="card p-5">
+            <div className="flex items-center gap-2 mb-4">
+              <span className="text-lg">📅</span>
+              <h2 className="text-[16px] font-bold">예정 일정</h2>
+            </div>
+            <div className="space-y-4">
+              {schedule.map((item, index) => (
+                <div key={index} className="flex items-start gap-4 pb-4 border-b border-gray-50 last:border-0 last:pb-0">
+                  <div className="text-[13px] font-medium text-[#0064FF] whitespace-nowrap min-w-[80px]">{item.date}</div>
+                  <div className="text-[14px]">{item.event}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </main>
     </div>
   );
 }
