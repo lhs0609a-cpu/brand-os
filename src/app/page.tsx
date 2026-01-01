@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 
 // Icons
 const DashboardIcon = () => (
@@ -157,13 +158,13 @@ export default function Dashboard() {
             <DashboardIcon />
             <span className="text-[14px]">대시보드</span>
           </div>
-          <div
-            className={`sidebar-item ${activeMenu === "phases" ? "active" : ""}`}
-            onClick={() => setActiveMenu("phases")}
+          <Link
+            href="/phases"
+            className="sidebar-item"
           >
             <PhaseIcon />
             <span className="text-[14px]">Phase 관리</span>
-          </div>
+          </Link>
 
           <div className="px-4 mb-2 mt-6">
             <span className="text-[11px] font-semibold text-[#8b95a1] uppercase tracking-wider">운영</span>
