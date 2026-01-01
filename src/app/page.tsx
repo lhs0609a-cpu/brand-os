@@ -176,13 +176,13 @@ export default function Dashboard() {
             <InventoryIcon />
             <span className="text-[14px]">재고 관리</span>
           </Link>
-          <div
-            className={`sidebar-item ${activeMenu === "finance" ? "active" : ""}`}
-            onClick={() => setActiveMenu("finance")}
+          <Link
+            href="/finance"
+            className="sidebar-item"
           >
             <FinanceIcon />
             <span className="text-[14px]">재무 관리</span>
-          </div>
+          </Link>
           <div
             className={`sidebar-item ${activeMenu === "marketing" ? "active" : ""}`}
             onClick={() => setActiveMenu("marketing")}
