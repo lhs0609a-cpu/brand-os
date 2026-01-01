@@ -169,13 +169,13 @@ export default function Dashboard() {
           <div className="px-4 mb-2 mt-6">
             <span className="text-[11px] font-semibold text-[#8b95a1] uppercase tracking-wider">운영</span>
           </div>
-          <div
-            className={`sidebar-item ${activeMenu === "inventory" ? "active" : ""}`}
-            onClick={() => setActiveMenu("inventory")}
+          <Link
+            href="/inventory"
+            className="sidebar-item"
           >
             <InventoryIcon />
             <span className="text-[14px]">재고 관리</span>
-          </div>
+          </Link>
           <div
             className={`sidebar-item ${activeMenu === "finance" ? "active" : ""}`}
             onClick={() => setActiveMenu("finance")}
